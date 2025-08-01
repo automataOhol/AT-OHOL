@@ -99,6 +99,7 @@ unsigned char HetuwMod::charKey_ShowPlayersInRange = 'p';
 unsigned char HetuwMod::charKey_ShowDeathMessages = 254;
 unsigned char HetuwMod::charKey_ShowHomeCords = 'g';
 unsigned char HetuwMod::charKey_ShowHostileTiles = 'u';
+unsigned char HetuwMod::charKey_ShowPlayerHostility = 'i';
 unsigned char HetuwMod::charKey_xRay = 'x';
 unsigned char HetuwMod::charKey_Search = 'j';
 unsigned char HetuwMod::charKey_TeachLanguage = 'l';
@@ -149,6 +150,8 @@ doublePair HetuwMod::playerNamePos;
 
 bool HetuwMod::bDrawCords;
 bool HetuwMod::bDrawHostileTiles = true;
+
+bool HetuwMod::bDrawPlayerHostility = true;
 
 bool HetuwMod::bWriteLogs = true;
 int HetuwMod::lastLoggedId = -1;
@@ -816,7 +819,8 @@ void HetuwMod::initSettings() {
 	yumConfig::registerSetting("key_show_playersinrange", charKey_ShowPlayersInRange);
 	yumConfig::registerSetting("key_show_deathmessages", charKey_ShowDeathMessages);
 	yumConfig::registerSetting("key_show_homecords", charKey_ShowHomeCords);
-	yumConfig::registerSetting("key_show_hostiletiles", charKey_ShowHostileTiles);
+	yumConfig::registerSetting("key_show_hostile_tiles", charKey_ShowHostileTiles);
+	yumConfig::registerSetting("key_show_hostile_tiles", charKey_ShowPlayerHostility);
 
 	yumConfig::registerSetting("key_remembercords", charKey_CreateHome, {preComment: "\n"});
 	yumConfig::registerSetting("key_fixcamera", charKey_FixCamera);
@@ -863,6 +867,7 @@ void HetuwMod::initSettings() {
 	yumConfig::registerSetting("init_show_deathmessages", bDrawDeathMessages);
 	yumConfig::registerSetting("init_show_homecords", bDrawHomeCords);
 	yumConfig::registerSetting("init_show_hostiletiles", bDrawHostileTiles);
+	yumConfig::registerSetting("init_show_player_hostility", bDrawPlayerHostility);
 
 	yumConfig::registerSetting("send_keyevents", sendKeyEvents, {savePredicate: []() { return sendKeyEvents; }});
 	yumConfig::registerSetting("drawbiomeinfo", bDrawBiomeInfo, {savePredicate: []() { return bDrawBiomeInfo; }});
@@ -2004,7 +2009,7 @@ void HetuwMod::livingLifeDraw() {
 	if (searchWordList.size() > 0) drawSearchList();
 	if (bDrawDeathMessages) drawDeathMessages();
 	if (bDrawHomeCords) drawHomeCords();
-	if (bDrawHostileTiles) drawHostileTiles();
+	if (bDrawHostileTiles) drawHostileTiles(); // player hostility doesn't go here
 	if (searchWordList.size() > 0) drawSearchTiles();
 	if (bDrawSelectedPlayerInfo && iDrawNames > 0 && !bHidePlayers) drawHighlightedPlayer();
 	if (bDrawPhotoRec) drawPhotoRec(recTakePhoto);
@@ -2736,6 +2741,63 @@ void HetuwMod::drawPlayerNames( LiveObject* player ) {
 	}
 }
 
+void HetuwMod::drawPlayerHostility(LiveObject* player) {
+	if (bHidePlayers) return;
+	if (!player || player->hide || player->outOfRange || !player->allSpritesLoaded) return;
+
+	if (bDrawPlayerHostility) {
+		int tileX = player->currentPos.x;
+		int tileY = player->currentPos.y;
+
+		int player_holding_id = player->holdingID;
+		int our_holding_id = ourLiveObject->holdingID;
+
+		int player_id = player->id;
+		int our_id = ourLiveObject->id;
+
+		int radius = 0;
+
+		if (player_holding_id == 152 || player_holding_id == 1624 ||
+			player_holding_id == 560 || player_holding_id == 3047) {
+
+			if (our_holding_id == 152 || our_holding_id == 1624 ||
+				our_holding_id == 560 || our_holding_id == 3047) {
+				setDrawColor(0, 0, 1, 0.15f);
+			}
+
+			if (player_id != our_id) {
+				setDrawColor(1, 0, 0, 0.15f);
+			}
+
+			if (player_holding_id == 152 || player_holding_id == 1624) {
+				radius = 3;
+			}
+			else if (player_holding_id == 560 || player_holding_id == 3047) {
+				radius = 1;
+			}
+
+			for (int x = tileX - radius; x <= tileX + radius; x++) {
+				for (int y = tileY - radius; y <= tileY + radius; y++) {
+					int dx = x - tileX;
+					int dy = y - tileY;
+
+					if (dx * dx + dy * dy <= radius * radius) {
+						drawTileRect(x, y);
+					}
+				}
+			}
+		}
+		else {
+			if (player_id != our_id) {
+				setDrawColor(1.0f, 1.0f, 0.0f, 0.15f);
+				drawTileRect(tileX, tileY);
+			}
+		}
+	}
+}
+
+
+
 void HetuwMod::drawHighlightedPlayer() {
 	if (game_getCurrentTime() - timeLastPlayerHover >= 4) return;
 
@@ -3332,6 +3394,12 @@ bool HetuwMod::livingLifeKeyDown(unsigned char inASCII) {
 		bDrawHostileTiles = !bDrawHostileTiles;
 		return true;
 	}
+
+	if (!bDrawMap && !commandKey && isCharKey(inASCII, charKey_ShowPlayerHostility)) {
+		bDrawPlayerHostility = !bDrawPlayerHostility;
+		return true;
+	}
+
 	if (!commandKey && isCharKey(inASCII, charKey_xRay)) {
 		if (bHoldDownTo_XRay) bxRay = true;
 		else bxRay = !bxRay;
@@ -3753,34 +3821,7 @@ int HetuwMod::getNextMoveDir(int direction, int add) {
 	return direction;
 }
 
-bool HetuwMod::tileHasNoDangerousAnimals(int x, int y) { // For Navigation With Horses And Cars and On Foot
-	int objId = livingLifePage->hetuwGetObjId( x, y);
-	if (objId <= 0) return true;
-	if (ourLiveObject->holdingID > 0 && getObject(ourLiveObject->holdingID)->rideable) {
-		if (ourLiveObject->holdingID == 2396 || // Running Crude Car
-			ourLiveObject->holdingID == 4655 || // Deliver Truck - +slotsInvis driving
-			ourLiveObject->holdingID == 4660 || // Red Sports Car $30 - driving +varNumeral
-			ourLiveObject->holdingID == 4681 || // Blue Sports Car $30 - driving +varNumeral
-			ourLiveObject->holdingID == 4690 || // Green Sports Car $30 - driving +varNumeral
-			ourLiveObject->holdingID == 4699 || // Yellow Sports Car $30 - driving +varNumeral
-			ourLiveObject->holdingID == 4708 || // Black Sports Car $30 - driving +varNumeral
-			ourLiveObject->holdingID == 4719) { // White Sports Car $30 - driving +varNumeral
-				return true; // no dangerous animals for cars
-		}
-		// check dangerous animals for horses
-		if (objId == 764) return false; // Rattle Snake	
-		if (objId == 1385) return false; // Attacking Rattle Snake
-		if (objId == 631) return false; // Hungry Grizzly Bear
-		if (objId == 628) return false; // Grizzly Bear
-		if (objId == 645) return false; // Fed Grizzly Bear
-		if (objId == 4762) return false; // Sleepy Grizzly Bear
-	} else { // moving by walking / not riding
-		if (objId < maxObjects && isDangerousAnimal != NULL && isDangerousAnimal[objId]) return false;
-	}
-	return true;
-}
-
-bool HetuwMod::tileHasNoDangerousPlayers(int x, int y) {
+bool HetuwMod::tileHasNoDangerousAnimals(int x, int y) {
 	int objId = livingLifePage->hetuwGetObjId( x, y);
 	if (objId <= 0) return true;
 	if (ourLiveObject->holdingID > 0 && getObject(ourLiveObject->holdingID)->rideable) {
@@ -4462,7 +4503,6 @@ void HetuwMod::onNameUpdate(LiveObject* o) {
 		else if (strstr(o->name, "EVE DEATH") != NULL) sendEmote("/LOVE");
 		else if (strstr(o->name, "EVE METH") != NULL) sendEmote("/LOVE");
 		else if (strstr(o->name, "EVE UNO") != NULL) sendEmote("/LOVE");
-		else if (strstr(o->name, "EVE SHADY") != NULL) sendEmote("/DEVIOUS");
 	}
 }
 
@@ -4925,7 +4965,7 @@ void HetuwMod::setHelpColorNormal() {
 }
 
 void HetuwMod::setHelpColorSpecial() {
-	setDrawColor( colorRainbow->color[0], 0.5f, colorRainbow->color[2], 1 );
+	setDrawColor(1.0f, 1.0f, 0.0f, 1.0f);
 }
 
 void HetuwMod::drawHelp() {
@@ -5020,6 +5060,12 @@ void HetuwMod::drawHelp() {
 	if (bDrawHostileTiles) setHelpColorSpecial();
 	else setHelpColorNormal();
 	snprintf(str, sizeof(str), "%c TOGGLE SHOW HOSTILE TILES", toupper(charKey_ShowHostileTiles));
+	livingLifePage->hetuwDrawScaledHandwritingFont( str, drawPos, guiScale );
+	drawPos.y -= lineHeight;
+
+	if (bDrawPlayerHostility) setHelpColorSpecial();
+	else setHelpColorNormal();
+	snprintf(str, sizeof(str), "%c TOGGLE SHOW HOSTILE PLAYERS", toupper(charKey_ShowPlayerHostility));
 	livingLifePage->hetuwDrawScaledHandwritingFont( str, drawPos, guiScale );
 	drawPos.y -= lineHeight;
 

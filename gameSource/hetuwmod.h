@@ -289,7 +289,6 @@ public:
 	static unsigned char charKey_ShowPlayersInRange;
 	static unsigned char charKey_ShowDeathMessages;
 	static unsigned char charKey_ShowHomeCords;
-	static unsigned char charKey_ShowHostilePlayers;
 	static unsigned char charKey_ShowHostileTiles;
 	static unsigned char charKey_xRay;
 	static unsigned char charKey_Search;
@@ -444,7 +443,6 @@ public:
 	static int getNextMoveDir(int direction, int add);
 	static bool tileIsSafeToWalk(int x, int y); 
 	static bool tileHasNoDangerousAnimals(int x, int y);
-	static bool tileHasNoDangerousPlayers(int x, int y);
 	static bool tileHasClosedDoor(int x, int y);
 	static bool dirIsSafeToWalk(int x, int y, int dir);
 	static bool findNextMove(int &x, int &y, int dir);
@@ -519,9 +517,6 @@ public:
 
 	static bool strContainsDangerousAnimal(const char* str);
 	static bool *isDangerousAnimal;
-
-	static bool strContainsDangerousPlayer(const char* str);
-	static bool *isDangerousPlayer;
 
 	static void setTakingPhoto( bool inTakingPhoto );
 	static bool takingPhoto;
@@ -632,8 +627,13 @@ public:
 	static bool minitechStayMinimized;
 	static bool minitechTooltipsEnabled;
 
-	static void Screen_Tint();
-
+	// Shady's ATC
+	// Chars
+	static unsigned char charKey_ShowPlayerHostility;
+	// bools
+	static bool bDrawPlayerHostility;
+	// functions
+	static void drawPlayerHostility( LiveObject* player );
 private:
 
 	static void zoomCalc();
@@ -645,9 +645,6 @@ private:
 
 	static bool bDrawCords;
 	static void drawCords();
-
-	static bool bDrawHostilePlayers;
-	static void drawHostilePlayers();
 
 	static bool bDrawHostileTiles;
 	static void drawHostileTiles();
@@ -669,7 +666,6 @@ private:
 	static bool mapZoomOutKeyDown;
 	
 	static void initDangerousAnimals();
-	static void initDangerousPlayers();
 	static void initClosedDoorIDs();
 	static void writeSettings(ofstream &);
 	static void initSettings();

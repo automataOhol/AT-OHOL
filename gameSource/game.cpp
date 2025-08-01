@@ -297,7 +297,7 @@ static char *windowTitle = NULL;
 const char *getWindowTitle() {
 	if (windowTitle == NULL) {
 		char title[256] = "";
-		snprintf(title, sizeof(title), "ATC-V0");
+		snprintf(title, sizeof(title), "AT Client - Iteration 1");
 		windowTitle = strdup(title);
 	}
     return windowTitle;
