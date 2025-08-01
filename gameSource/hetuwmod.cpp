@@ -100,6 +100,7 @@ unsigned char HetuwMod::charKey_ShowDeathMessages = 254;
 unsigned char HetuwMod::charKey_ShowHomeCords = 'g';
 unsigned char HetuwMod::charKey_ShowHostileTiles = 'u';
 unsigned char HetuwMod::charKey_ShowPlayerHostility = 'i';
+unsigned char HetuwMod::charKey_ShowLeadershipVision = 'o';
 unsigned char HetuwMod::charKey_xRay = 'x';
 unsigned char HetuwMod::charKey_Search = 'j';
 unsigned char HetuwMod::charKey_TeachLanguage = 'l';
@@ -151,7 +152,10 @@ doublePair HetuwMod::playerNamePos;
 bool HetuwMod::bDrawCords;
 bool HetuwMod::bDrawHostileTiles = true;
 
+// AT 
 bool HetuwMod::bDrawPlayerHostility = true;
+bool HetuwMod::bDrawLeadershipVision = true;
+//
 
 bool HetuwMod::bWriteLogs = true;
 int HetuwMod::lastLoggedId = -1;
@@ -820,7 +824,8 @@ void HetuwMod::initSettings() {
 	yumConfig::registerSetting("key_show_deathmessages", charKey_ShowDeathMessages);
 	yumConfig::registerSetting("key_show_homecords", charKey_ShowHomeCords);
 	yumConfig::registerSetting("key_show_hostile_tiles", charKey_ShowHostileTiles);
-	yumConfig::registerSetting("key_show_hostile_tiles", charKey_ShowPlayerHostility);
+	yumConfig::registerSetting("key_show_hostile_players", charKey_ShowPlayerHostility);
+	yumConfig::registerSetting("key_show_leadership_vision", charKey_ShowLeadershipVision);
 
 	yumConfig::registerSetting("key_remembercords", charKey_CreateHome, {preComment: "\n"});
 	yumConfig::registerSetting("key_fixcamera", charKey_FixCamera);
@@ -2004,12 +2009,14 @@ void HetuwMod::livingLifeDraw() {
 
 	if (bDrawGrid) drawGrid();
 	drawAge();
+	drawTemp();
+	drawPipPS();
 	if (bDrawCords) drawCords();
 	if (iDrawPlayersInRangePanel > 0) drawPlayersInRangePanel();
 	if (searchWordList.size() > 0) drawSearchList();
 	if (bDrawDeathMessages) drawDeathMessages();
 	if (bDrawHomeCords) drawHomeCords();
-	if (bDrawHostileTiles) drawHostileTiles(); // player hostility doesn't go here
+	if (bDrawHostileTiles) drawHostileTiles(); 
 	if (searchWordList.size() > 0) drawSearchTiles();
 	if (bDrawSelectedPlayerInfo && iDrawNames > 0 && !bHidePlayers) drawHighlightedPlayer();
 	if (bDrawPhotoRec) drawPhotoRec(recTakePhoto);
@@ -2742,6 +2749,7 @@ void HetuwMod::drawPlayerNames( LiveObject* player ) {
 }
 
 void HetuwMod::drawPlayerHostility(LiveObject* player) {
+
 	if (bHidePlayers) return;
 	if (!player || player->hide || player->outOfRange || !player->allSpritesLoaded) return;
 
@@ -2796,6 +2804,17 @@ void HetuwMod::drawPlayerHostility(LiveObject* player) {
 	}
 }
 
+void HetuwMod::drawLeadershipVision(LiveObject* player) {
+    if (bHidePlayers) return;
+    if (!player || player->hide || player->outOfRange || !player->allSpritesLoaded) return;
+
+    if (bDrawLeadershipVision) {
+
+		if (player->id != ourLiveObject->id){
+			//Use this to discover graphics
+		}
+    }
+}
 
 
 void HetuwMod::drawHighlightedPlayer() {
@@ -3399,6 +3418,12 @@ bool HetuwMod::livingLifeKeyDown(unsigned char inASCII) {
 		bDrawPlayerHostility = !bDrawPlayerHostility;
 		return true;
 	}
+
+	if (!bDrawMap && !commandKey && isCharKey(inASCII, charKey_ShowLeadershipVision)) {
+		bDrawLeadershipVision = !bDrawLeadershipVision;
+		return true;
+	}
+
 
 	if (!commandKey && isCharKey(inASCII, charKey_xRay)) {
 		if (bHoldDownTo_XRay) bxRay = true;
@@ -4487,22 +4512,21 @@ void HetuwMod::onNameUpdate(LiveObject* o) {
 	HetuwMod::writeLineToLogs("name", to_string(o->id) + hetuwLogSeperator + string(o->name));
 
 	if (ourLiveObject && ourLiveObject->id == o->id) {
-		if (strstr(o->name, "EVE SLINKER") != NULL) sendEmote("/BLUSH");
-		else if (strstr(o->name, "EVE SLINKMAN") != NULL) sendEmote("/BLUSH");
-		else if (strstr(o->name, "EVE SLINKEY") != NULL) sendEmote("/BLUSH");
-		else if (strstr(o->name, "EVE SLINKY") != NULL) sendEmote("/BLUSH");
-		else if (strstr(o->name, "EVE GAYLORD") != NULL) sendEmote("/HMPH");
-		else if (strstr(o->name, "EVE YIKE") != NULL) sendEmote("/HMPH");
+		if (strstr(o->name, "EVE ROHRER") != NULL) sendEmote("/HMPH");
+		else if (strstr(o->name, "EVE SHADY") != NULL) sendEmote("/DEVIOUS");
+		else if (strstr(o->name, "EVE SHADE") != NULL) sendEmote("/DEVIOUS");
+		else if (strstr(o->name, "EVE JUDON")  != NULL) sendEmote("/ILL");
+		else if (strstr(o->name, "EVE KING") != NULL) sendEmote("/ILL");
 		else if (strstr(o->name, "EVE ZIV") != NULL) sendEmote("/DEVIOUS");
+		else if (strstr(o->name, "EVE SMUGALA") != NULL) sendEmote("/DEVIOUS");
+		else if (strstr(o->name, "EVE POST") != NULL) sendEmote("/DEVIOUS");
 		else if (strstr(o->name, "EVE KILL") != NULL) sendEmote("/DEVIOUS");
-		else if (strstr(o->name, "EVE TARR") != NULL) sendEmote("/JOY");
-		else if (strstr(o->name, "EVE BOOB") != NULL) sendEmote("/SHOCK");
-		else if (strstr(o->name, "EVE GAY") != NULL) sendEmote("/HAPPY");
-		else if (strstr(o->name, "EVE GRIM") != NULL) sendEmote("/HUBBA");
-		else if (strstr(o->name, "EVE ROHRER") != NULL) sendEmote("/HUBBA");
-		else if (strstr(o->name, "EVE DEATH") != NULL) sendEmote("/LOVE");
-		else if (strstr(o->name, "EVE METH") != NULL) sendEmote("/LOVE");
-		else if (strstr(o->name, "EVE UNO") != NULL) sendEmote("/LOVE");
+		else if (strstr(o->name, "EVE RAY") != NULL) sendEmote("/DEVIOUS");
+		else if (strstr(o->name, "EVE RAYAN") != NULL) sendEmote("/DEVIOUS");
+		else if (strstr(o->name, "EVE EVEN") != NULL) sendEmote("/JOY");
+		else if (strstr(o->name, "EVE GREVEN") != NULL) sendEmote("/JOY");
+		else if (strstr(o->name, "EVE LENNY") != NULL) sendEmote("/HMPH");
+
 	}
 }
 
@@ -4592,6 +4616,8 @@ void HetuwMod::drawDeathMessages() {
 	}
 }
 
+
+
 void HetuwMod::drawMap() {
 	doublePair drawPos;
 	doublePair screenCenter = lastScreenViewCenter;
@@ -4600,7 +4626,6 @@ void HetuwMod::drawMap() {
 
 	setDrawColor( 0, 0, 0, 0.2 );
 	drawRect( screenCenter, viewWidth/2, viewHeight/2 );
-	setDrawColor( 1, 1, 1, 1 );
 
 	unordered_set<string> names;
 	double minX = screenCenter.x - viewWidth/2;
@@ -4856,18 +4881,86 @@ void HetuwMod::drawSearchList() {
 }
 
 void HetuwMod::drawAge() {
-	setDrawColor( 0, 0, 0, 1 );
+
 	doublePair drawPos;
 	char sBuf[32];
-	int age = (int)(ourAge*10);
-	int ageDecimal = age - int(age*0.1)*10;
-	age = (int)((age-ageDecimal)*0.1);
-	snprintf(sBuf, sizeof(sBuf), "%c  %i.%i", ourGender, age, ageDecimal);
+	int age = (int)(ourAge * 10);
+	int ageDecimal = age - int(age * 0.1) * 10;
+
+	// Set color based on age range
+	if (ourAge >= 14 && ourAge < 40) {
+		setDrawColor(0, 0.8, 0, 1); 
+	} else {
+		setDrawColor(0, 0, 0, 1);
+
+	}
+
+	age = (int)((age - ageDecimal) * 0.1);
+	snprintf(sBuf, sizeof(sBuf), "AGE: %i.%i", age, ageDecimal);
 	drawPos = lastScreenViewCenter;
-	drawPos.x += 290;
-	drawPos.y -= viewHeight/2 - 25;
-	livingLifePage->hetuwDrawWithHandwritingFont( sBuf, drawPos );
+	drawPos.x += 270;
+	drawPos.y -= viewHeight / 2 - 25;
+	livingLifePage->hetuwDrawWithHandwritingFont(sBuf, drawPos);
 }
+
+void HetuwMod::drawTemp() {
+    float temp = ourLiveObject->heat;  // value from 0.0 to 1.0
+
+    float r, g, b;
+
+    if (temp <= 0.5f) {
+
+        float t = temp / 0.5f;
+        r = 0.0f;
+        g = 0.0f;
+        b = 1.0f - t;
+    } else {
+  
+        float t = (temp - 0.5f) / 0.5f;
+        r = t;
+        g = 0.0f;
+        b = 0.0f;
+    }
+
+    setDrawColor(r, g, b, 1);
+
+    doublePair drawPos = lastScreenViewCenter;
+    drawPos.x += 130;
+    drawPos.y -= viewHeight / 2 - 25;
+
+    char sBuf[32];
+    snprintf(sBuf, sizeof(sBuf), "HEAT: %.2f", temp);
+
+    livingLifePage->hetuwDrawWithHandwritingFont(sBuf, drawPos);
+}
+
+
+void HetuwMod::drawPipPS() {
+    float pps = ourLiveObject->foodDrainTime;
+
+    // Clamp to [4, 22]
+    if (pps < 4) pps = 4;
+    if (pps > 22) pps = 22;
+
+    float t = (pps - 4) / (22 - 4);  
+
+
+    float r = t;
+    float g = t * 0.5f;
+    float b = 1.0f - t;
+
+    setDrawColor(r, g, b, 1);
+
+    doublePair drawPos = lastScreenViewCenter;
+    drawPos.x += 0;
+    drawPos.y -= viewHeight / 2 - 25;
+
+    char sBuf[32];
+    snprintf(sBuf, sizeof(sBuf), "PPS: %.2f", pps);
+
+    livingLifePage->hetuwDrawWithHandwritingFont(sBuf, drawPos);
+}
+
 
 void HetuwMod::drawCords() {
 	int x = round(ourLiveObject->currentPos.x+cordOffset.x);
@@ -5011,7 +5104,7 @@ void HetuwMod::drawHelp() {
 	drawPos.y -= lineHeight;
 
 	drawPos.y -= lineHeight;
-	snprintf(str, sizeof(str), "YOU CAN CHANGE KEYS AND SETTINGS BY MODIFYING THE HETUW.CFG FILE");
+	snprintf(str, sizeof(str), "YOU CAN CHANGE KEYS AND SETTINGS BY MODIFYING THE CONFIG FILE");
 	livingLifePage->hetuwDrawScaledHandwritingFont( str, drawPos, guiScale );
 	drawPos.y -= lineHeight;
 
@@ -5068,6 +5161,13 @@ void HetuwMod::drawHelp() {
 	snprintf(str, sizeof(str), "%c TOGGLE SHOW HOSTILE PLAYERS", toupper(charKey_ShowPlayerHostility));
 	livingLifePage->hetuwDrawScaledHandwritingFont( str, drawPos, guiScale );
 	drawPos.y -= lineHeight;
+
+	if (bDrawLeadershipVision) setHelpColorSpecial();
+	else setHelpColorNormal();
+	snprintf(str, sizeof(str), "%c TOGGLE LEADERSHIP VISION", toupper(charKey_ShowLeadershipVision));
+	livingLifePage->hetuwDrawScaledHandwritingFont( str, drawPos, guiScale );
+	drawPos.y -= lineHeight;
+
 
 	if (bxRay) setHelpColorSpecial();
 	else setHelpColorNormal();

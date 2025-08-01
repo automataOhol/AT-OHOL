@@ -630,11 +630,28 @@ public:
 	// Shady's ATC
 	// Chars
 	static unsigned char charKey_ShowPlayerHostility;
+
+	static unsigned char charKey_ShowLeadershipVision;		
 	// bools
 	static bool bDrawPlayerHostility;
+
+	static bool bDrawLeadershipVision;
 	// functions
 	static void drawPlayerHostility( LiveObject* player );
+
+	static void drawLeadershipVision( LiveObject* player );
+
+	// functions - no prmeters
+	static void drawTemp();
+	static void drawPipPS();
 private:
+	// Shady's ATC
+	// Chars
+
+	// bools
+
+	// functions
+	///////////////////////////////////	
 
 	static void zoomCalc();
 

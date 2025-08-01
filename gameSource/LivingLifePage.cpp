@@ -8765,6 +8765,7 @@ void LivingLifePage::draw( doublePair inViewCenter,
 				if ( !takingPhoto && o != ourLiveObject && HetuwMod::iDrawNames > 0 ) 
 					HetuwMod::drawPlayerNames( o );
                     HetuwMod::drawPlayerHostility( o );
+                    HetuwMod::drawLeadershipVision( o );
 
                 ignoreWatchedObjectDraw( false );
                 }
