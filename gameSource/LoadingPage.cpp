@@ -16,37 +16,37 @@ void LoadingPage::setCurrentProgress( float inProgress ) {
 
         
 
-void LoadingPage::draw( doublePair inViewCenter, 
-                        double inViewSize ) {
+void LoadingPage::draw(doublePair inViewCenter, double inViewSize) {
+    doublePair labelPos = { 0, 50 };
+    drawMessage("AT CLIENT - SSC SERVICES", labelPos, false);
 
-    doublePair labelPos = { 0, 0 };
+    labelPos.y = -25;
+    drawMessage(mPhaseName, labelPos, false);
 
-    drawMessage( "AT CLIENT - SSC SERVICES", labelPos, false );
+    if (mShowProgress) {
+        // center position of the progress bar
+        doublePair barPos = { 0, -160 };
 
-    labelPos.y = -100;
-    
-    drawMessage( mPhaseName, labelPos, false );
+        double barWidth = 200;
+        double barHeight = 20;
 
+        double halfW = barWidth / 2;
+        double halfH = barHeight / 2;
 
-    if( mShowProgress ) {
-        
         // border
-        setDrawColor( 1, 1, 1, 1 );
-        
-        drawRect( -100, -220, 
-                  100, -200 );
-        
+        setDrawColor(1, 1, 1, 1);
+        drawRect(barPos.x - halfW, barPos.y - halfH,
+                 barPos.x + halfW, barPos.y + halfH);
+
         // inner black
-        setDrawColor( 0, 0, 0, 1 );
-        
-        drawRect( -98, -218, 
-                  98, -202 );
-        
-        
-        // progress
-        setDrawColor( .8, .8, .8, 1 );
-        drawRect( -98, -218, 
-                  -98 + mProgress * ( 98 * 2 ), -202 );
-        }
-    
+        setDrawColor(0, 0, 0, 1);
+        drawRect(barPos.x - halfW + 2, barPos.y - halfH + 2,
+                 barPos.x + halfW - 2, barPos.y + halfH - 2);
+
+        // progress fill
+        setDrawColor(0.8f, 0.8f, 0.8f, 1);
+        drawRect(barPos.x - halfW + 2, barPos.y - halfH + 2,
+                 barPos.x - halfW + 2 + mProgress * (barWidth - 4), 
+                 barPos.y + halfH - 2);
     }
+}

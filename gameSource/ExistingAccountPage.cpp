@@ -84,7 +84,7 @@ ExistingAccountPage::ExistingAccountPage()
           mGenesButton( mainFont, 550, 0, translate( "genesButton" ) ),
           mFamilyTreesButton( mainFont, 320, -160, translate( "familyTrees" ) ),
           mTechTreeButton( mainFont, 550, -160, translate( "techTree" ) ),
-          mServiceDiscordButton( mainFont, 450, -240, "SCC SERVICES DISCORD" ),
+          mServiceDiscordButton( mainFont, 450, -240, "SSC SERVICES" ),
           mClearAccountButton( mainFont, 400, -280, 
                                translate( "clearAccount" ) ),
           mCancelButton( mainFont, -400, -280, 

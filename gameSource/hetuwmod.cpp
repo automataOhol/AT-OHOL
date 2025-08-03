@@ -4984,14 +4984,14 @@ void HetuwMod::drawSpeed() {
 
     float speed = ourLiveObject->currentSpeed;
 
-    int tpsRaw = ((int)(speed * 10000)) % 10000;
+    int mpsRaw = ((int)(speed * 10000)) % 10000;
 
-    int tpsWhole = tpsRaw / 100;      
-    int tpsDecimal = tpsRaw % 100;    
+    int mpsWhole = mpsRaw / 100;      
+    int mpsDecimal = mpsRaw % 100;    
 
 	setDrawColor(0.4f, 0.8f, 0.4f, 1.0f);
 
-    snprintf(sBuf, sizeof(sBuf), "%d.%02d TPS", tpsWhole, tpsDecimal);
+    snprintf(sBuf, sizeof(sBuf), "%d.%02d MPS", mpsWhole, mpsDecimal);
 
     drawPos = lastScreenViewCenter;
     drawPos.x += -280;
