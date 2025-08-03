@@ -634,16 +634,17 @@ public:
 	static unsigned char charKey_ShowLeadershipVision;		
 	// bools
 	static bool bDrawPlayerHostility;
-
+	static bool isHoldingWeapon(int holdingID);  
 	static bool bDrawLeadershipVision;
 	// functions
 	static void drawPlayerHostility( LiveObject* player );
 
-	static void drawLeadershipVision( LiveObject* player );
 
 	// functions - no prmeters
 	static void drawTemp();
-	static void drawPipPS();
+	static void drawHunger();
+	static void drawOurStatus();
+	static void drawSpeed();
 private:
 	// Shady's ATC
 	// Chars

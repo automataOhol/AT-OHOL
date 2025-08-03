@@ -21,7 +21,7 @@ void LoadingPage::draw( doublePair inViewCenter,
 
     doublePair labelPos = { 0, 0 };
 
-    drawMessage( "LOADING", labelPos, false );
+    drawMessage( "AT CLIENT - SSC SERVICES", labelPos, false );
 
     labelPos.y = -100;
     

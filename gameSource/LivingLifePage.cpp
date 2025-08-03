@@ -6970,7 +6970,7 @@ void LivingLifePage::drawHomeSlip( doublePair inSlipPos, int inIndex ) {
                 char *string = 
                     mPreviousHomeDistStrings[inIndex].getElementDirect( i );
                     
-                setDrawColor( 0, 0, 0, fade * pencilErasedFontExtraFade );
+                setDrawColor( 1, 0, 0, fade * pencilErasedFontExtraFade );
                 pencilErasedFont->drawString( 
                     string, distPos, alignCenter );
                 }
@@ -8764,8 +8764,9 @@ void LivingLifePage::draw( doublePair inViewCenter,
 
 				if ( !takingPhoto && o != ourLiveObject && HetuwMod::iDrawNames > 0 ) 
 					HetuwMod::drawPlayerNames( o );
+
                     HetuwMod::drawPlayerHostility( o );
-                    HetuwMod::drawLeadershipVision( o );
+                
 
                 ignoreWatchedObjectDraw( false );
                 }
@@ -10580,7 +10581,7 @@ void LivingLifePage::draw( doublePair inViewCenter,
             
             slipPos.y += lrint( highestCravingYOffset / 1.75 );
 
-            drawSprite( mHungerSlipSprites[i], slipPos );
+            // drawSprite( mHungerSlipSprites[i], slipPos );
             }
         }
 
@@ -10720,10 +10721,10 @@ void LivingLifePage::draw( doublePair inViewCenter,
             
             SimpleVector<doublePair> charPos;        
                     
-            pencilFont->getCharPos( &charPos, 
-                                    oldString,
-                                    drawPosTemp,
-                                    alignLeft );
+            // pencilFont->getCharPos( &charPos, 
+            //                         oldString,
+            //                         drawPosTemp,
+            //                         alignLeft );
             
             int newLen = 0;
             
@@ -10851,10 +10852,25 @@ void LivingLifePage::draw( doublePair inViewCenter,
 
     // info panel at bottom, over top of all the other slips
     setDrawColor( 1, 1, 1, 1 );
+
     doublePair panelPos = lastScreenViewCenter;
-    panelPos.y -= 242 + 32 + 16 + 6;
-	panelPos.y -= HetuwMod::panelOffsetY;
-    drawSprite( mGuiPanelSprite, panelPos );
+    panelPos.x += 50;  // move right
+    panelPos.y -= 350;  // move up
+    panelPos.y -= HetuwMod::panelOffsetY;  // apply custom Y offset
+
+    int screenWidth, screenHeight;
+    getScreenDimensions( &screenWidth, &screenHeight );
+
+    double rectWidth = 13000;
+    double rectHeight = 100;    
+
+    double startX = panelPos.x - rectWidth / 2;
+    double startY = panelPos.y - rectHeight / 2;
+    double endX = panelPos.x + rectWidth / 2;
+    double endY = panelPos.y + rectHeight / 2;
+
+    setDrawColor(0.02, 0.02, 0.05, 1); 
+    drawRect( startX, startY, endX, endY );
 
     if( ourLiveObject != NULL &&
         ourLiveObject->dying  &&
@@ -10863,7 +10879,7 @@ void LivingLifePage::draw( doublePair inViewCenter,
         doublePair bloodPos = panelPos;
         bloodPos.y -= 32;
         bloodPos.x -= 32;
-        drawSprite( mGuiBloodSprite, bloodPos );
+        //drawSprite( mGuiBloodSprite, bloodPos );
         toggleMultiplicativeBlend( false );
         }
     
@@ -10874,7 +10890,7 @@ void LivingLifePage::draw( doublePair inViewCenter,
         // draw curse token status
         Font *curseTokenFont;
         if( ourLiveObject->curseTokenCount > 0 ) {
-            setDrawColor( 0, 0, 0, 1.0 );
+            setDrawColor( 1, 0, 0, 1.0 );
             curseTokenFont = pencilFont;
             }
         else {
@@ -10894,7 +10910,7 @@ void LivingLifePage::draw( doublePair inViewCenter,
         // for now, we receive at most one update per life, so
         // don't need to worry about showing erased version of this
         if( ourLiveObject->excessCursePoints > 0 ) {
-            setDrawColor( 0, 0, 0, 1.0 );
+            setDrawColor( 1, 0, 0, 1.0 );
             doublePair pointsPos = curseTokenPos;
             pointsPos.y -= 22;
             pointsPos.x -= 3;
@@ -10914,19 +10930,19 @@ void LivingLifePage::draw( doublePair inViewCenter,
                                lastScreenViewCenter.y - 334 - HetuwMod::panelOffsetY };
         
             pos.x += i * 30;
-            drawSprite( 
-                    mHungerBoxSprites[ i % NUM_HUNGER_BOX_SPRITES ], 
-                    pos );
+            // drawSprite( 
+            //         mHungerBoxSprites[ i % NUM_HUNGER_BOX_SPRITES ], 
+            //         pos );
                 
             if( i < ourLiveObject->foodStore ) {                
-                drawSprite( 
-                    mHungerBoxFillSprites[ i % NUM_HUNGER_BOX_SPRITES ], 
-                    pos );
+                // drawSprite( 
+                //     mHungerBoxFillSprites[ i % NUM_HUNGER_BOX_SPRITES ], 
+                //     pos );
                 }
             else if( i < ourLiveObject->maxFoodStore ) {
-                drawSprite( 
-                    mHungerBoxFillErasedSprites[ i % NUM_HUNGER_BOX_SPRITES ], 
-                    pos );
+                // drawSprite( 
+                //     mHungerBoxFillErasedSprites[ i % NUM_HUNGER_BOX_SPRITES ], 
+                //     pos );
                 }
             }
         for( int i=ourLiveObject->foodCapacity; 
@@ -10935,14 +10951,14 @@ void LivingLifePage::draw( doublePair inViewCenter,
                                lastScreenViewCenter.y - 334 - HetuwMod::panelOffsetY };
             
             pos.x += i * 30;
-            drawSprite( 
-                mHungerBoxErasedSprites[ i % NUM_HUNGER_BOX_SPRITES ], 
-                pos );
+            // drawSprite( 
+            //     mHungerBoxErasedSprites[ i % NUM_HUNGER_BOX_SPRITES ], 
+            //     pos );
             
             if( i < ourLiveObject->maxFoodStore ) {
-                drawSprite( 
-                    mHungerBoxFillErasedSprites[ i % NUM_HUNGER_BOX_SPRITES ], 
-                    pos );
+                // drawSprite( 
+                //     mHungerBoxFillErasedSprites[ i % NUM_HUNGER_BOX_SPRITES ], 
+                //     pos );
                 }
             }
         
@@ -10992,7 +11008,7 @@ void LivingLifePage::draw( doublePair inViewCenter,
             // no sub pixel positions
             pos2.x = round( pos2.x );
 
-            drawSprite( mTempArrowErasedSprites[a->i], pos2 );
+            // drawSprite( mTempArrowErasedSprites[a->i], pos2 );
             }
         toggleAdditiveTextureColoring( false );
         
@@ -11005,30 +11021,30 @@ void LivingLifePage::draw( doublePair inViewCenter,
         // no sub pixel positions
         pos.x = round( pos.x );
         
-        drawSprite( mTempArrowSprites[mCurrentArrowI], pos );
+        // drawSprite( mTempArrowSprites[mCurrentArrowI], pos );
         
         toggleMultiplicativeBlend( false );
         
 
         for( int i=0; i<mOldDesStrings.size(); i++ ) {
-            doublePair pos = { lastScreenViewCenter.x, 
-                               lastScreenViewCenter.y - 313 - HetuwMod::panelOffsetY };
+            // doublePair pos = { lastScreenViewCenter.x, 
+            //                    lastScreenViewCenter.y - 313 - HetuwMod::panelOffsetY };
             float fade =
                 mOldDesFades.getElementDirect( i );
             
-            setDrawColor( 0, 0, 0, fade * pencilErasedFontExtraFade );
-            pencilErasedFont->drawString( 
-                mOldDesStrings.getElementDirect( i ), pos, alignCenter );
+            setDrawColor( 1, 0, 0, fade * pencilErasedFontExtraFade );
+            // pencilErasedFont->drawString( 
+            //     mOldDesStrings.getElementDirect( i ), pos, alignCenter );
             }
 
-        doublePair yumPos = { lastScreenViewCenter.x - 480, 
-                              lastScreenViewCenter.y - 313 - HetuwMod::panelOffsetY };
+        // doublePair yumPos = { lastScreenViewCenter.x - 480, 
+        //                       lastScreenViewCenter.y - 313 - HetuwMod::panelOffsetY };
         
         setDrawColor( 0, 0, 0, 1 );
         if( mYumBonus > 0 ) {    
             char *yumString = autoSprintf( "+%d", mYumBonus );
             
-            pencilFont->drawString( yumString, yumPos, alignLeft );
+            // pencilFont->drawString( yumString, yumPos, alignLeft ); // the annoying indicator for the old bar,
             delete [] yumString;
             }
         
@@ -11038,15 +11054,15 @@ void LivingLifePage::draw( doublePair inViewCenter,
             
             setDrawColor( 0, 0, 0, fade * pencilErasedFontExtraFade );
             char *yumString = autoSprintf( "+%d", 
-                                           mOldYumBonus.getElementDirect( i ) );
-            pencilErasedFont->drawString( yumString, yumPos, alignLeft );
+                                           mOldYumBonus.getElementDirect( i ) ); // the annoying indicator for the old bar,
+            // pencilErasedFont->drawString( yumString, yumPos, alignLeft );
             delete [] yumString;
             }
 
 
 
-        doublePair atePos = { lastScreenViewCenter.x, 
-                              lastScreenViewCenter.y - 347 - HetuwMod::panelOffsetY };
+        // doublePair atePos = { lastScreenViewCenter.x, 
+        //                       lastScreenViewCenter.y - 347 - HetuwMod::panelOffsetY };
         
         int shortestFill = 100;
         
@@ -11057,8 +11073,8 @@ void LivingLifePage::draw( doublePair inViewCenter,
             
             setDrawColor( 0, 0, 0, fade * pencilErasedFontExtraFade );
             
-            pencilErasedFont->drawString( 
-                mOldLastAteStrings.getElementDirect( i ), atePos, alignLeft );
+            // pencilErasedFont->drawString( 
+            //     mOldLastAteStrings.getElementDirect( i ), atePos, alignLeft );
 
             toggleMultiplicativeBlend( true );
             toggleAdditiveTextureColoring( true );
@@ -11072,14 +11088,14 @@ void LivingLifePage::draw( doublePair inViewCenter,
                 shortestFill = fillMax;
                 }
 
-            drawHungerMaxFillLine( atePos, 
-                                   fillMax,
-                                   mHungerBarErasedSprites,
-                                   mHungerDashErasedSprites, 
-                                   false,
-                                   // only draw dashes once, for longest
-                                   // one
-                                   true );
+            // drawHungerMaxFillLine( atePos, 
+            //                        fillMax,
+            //                        mHungerBarErasedSprites,
+            //                        mHungerDashErasedSprites, 
+            //                        false,
+            //                        // only draw dashes once, for longest
+            //                        // one
+            //                        true );
 
 
             toggleAdditiveTextureColoring( false );
@@ -11090,13 +11106,13 @@ void LivingLifePage::draw( doublePair inViewCenter,
             toggleMultiplicativeBlend( true );
             setDrawColor( 1, 1, 1, 1 );
             
-            drawHungerMaxFillLine( atePos, 
-                                   shortestFill,
-                                   mHungerBarErasedSprites,
-                                   mHungerDashErasedSprites, 
-                                   true,
-                                   // draw longest erased dash line once
-                                   false );
+            // drawHungerMaxFillLine( atePos, 
+            //                        shortestFill,
+            //                        mHungerBarErasedSprites,
+            //                        mHungerDashErasedSprites, 
+            //                        true,
+            //                        // draw longest erased dash line once
+            //                        false );
             toggleMultiplicativeBlend( false );
             }
         
@@ -11104,18 +11120,18 @@ void LivingLifePage::draw( doublePair inViewCenter,
         if( mCurrentLastAteString != NULL ) {
             setDrawColor( 0, 0, 0, 1 );
         
-            pencilFont->drawString( 
-                mCurrentLastAteString, atePos, alignLeft );
+            // pencilFont->drawString( 
+            //     mCurrentLastAteString, atePos, alignLeft );
             
             
             toggleMultiplicativeBlend( true );
             setDrawColor( 1, 1, 1, 1 );
             
-            drawHungerMaxFillLine( atePos, 
-                                   mCurrentLastAteFillMax,
-                                   mHungerBarSprites,
-                                   mHungerDashSprites,
-                                   false, false );
+            // drawHungerMaxFillLine( atePos, 
+            //                        mCurrentLastAteFillMax,
+            //                        mHungerBarSprites,
+            //                        mHungerDashSprites,
+            //                        false, false );
             
             toggleMultiplicativeBlend( false );
             }
@@ -11126,13 +11142,13 @@ void LivingLifePage::draw( doublePair inViewCenter,
 
         char overTempMeter = false;
         
-        doublePair mousePos = { lastMouseX, lastMouseY };
+        // doublePair mousePos = { lastMouseX, lastMouseY };
         
-        if( mousePos.y < tipPos.y + 13 &&
-            mousePos.x > tipPos.x + 480 &&
-            mousePos.x < tipPos.x + 607 ) {
-            overTempMeter = true;
-            }
+        // if( mousePos.y < tipPos.y + 13 &&
+        //     mousePos.x > tipPos.x + 480 &&
+        //     mousePos.x < tipPos.x + 607 ) {
+        //     overTempMeter = true;
+        //     }
         
         char badBiome = false;
         if( mCurMouseOverBiome != -1 &&
@@ -11659,7 +11675,7 @@ void LivingLifePage::draw( doublePair inViewCenter,
                             i--;
                             }
                         else if( strcmp( mCurrentDes, 
-                                         mOldDesStrings.getElementDirect(i) )
+                                         mOldDesStrings.getElementDirect(i) ) 
                                  == 0 ) {
                             // already in stack, move to top
                             mOldDesStrings.deallocateStringElement( i );
@@ -11677,8 +11693,8 @@ void LivingLifePage::draw( doublePair inViewCenter,
             // 2HOL hetuw hides this in preference to the cursor tooltips.
             // This causes some useful information (like leadership, or object
             // tags if enabled) to be lost, so we keep it enabled for YumLife.
-            setDrawColor( 0, 0, 0, 1 );
-            pencilFont->drawString( stringUpper, tipPos, alignCenter );
+            setDrawColor( 1, 0, 0, 1 );
+            pencilFont->drawString( stringUpper, tipPos, alignCenter ); // String Upper Telling thing - shady
 
             // Minitech cursor tooltips
             if( HetuwMod::minitechTooltipsEnabled && !mXKeyDown && mCurMouseOverID != 0 ) {
@@ -27955,7 +27971,7 @@ void LivingLifePage::actionPerformed( GUIComponent *inTarget ) {
         if( objectID != -1 ) {
             char *message = autoSprintf( "VOGI %d %d %d#",
                                          lrint( vogPos.x ), 
-                                         lrint( vogPos.y ), objectID );
+                                         lrint( vogPos.y    ), objectID );
             
             sendToServerSocket( message );
             

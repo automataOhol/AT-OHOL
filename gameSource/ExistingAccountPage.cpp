@@ -84,7 +84,7 @@ ExistingAccountPage::ExistingAccountPage()
           mGenesButton( mainFont, 550, 0, translate( "genesButton" ) ),
           mFamilyTreesButton( mainFont, 320, -160, translate( "familyTrees" ) ),
           mTechTreeButton( mainFont, 550, -160, translate( "techTree" ) ),
-          mOholCurseButton( mainFont, 450, -240, "OHOLCURSE" ),
+          mServiceDiscordButton( mainFont, 450, -240, "SCC SERVICES DISCORD" ),
           mClearAccountButton( mainFont, 400, -280, 
                                translate( "clearAccount" ) ),
           mCancelButton( mainFont, -400, -280, 
@@ -119,7 +119,7 @@ ExistingAccountPage::ExistingAccountPage()
     setButtonStyle( &mGenesButton );
     setButtonStyle( &mFamilyTreesButton );
     setButtonStyle( &mTechTreeButton );
-    setButtonStyle( &mOholCurseButton );
+    setButtonStyle( &mServiceDiscordButton );
     setButtonStyle( &mClearAccountButton );
     setButtonStyle( &mCancelButton );
     setButtonStyle( &mSettingsButton );
@@ -145,7 +145,7 @@ ExistingAccountPage::ExistingAccountPage()
     addComponent( &mGenesButton );
     addComponent( &mFamilyTreesButton );
     addComponent( &mTechTreeButton );
-    addComponent( &mOholCurseButton );
+    addComponent( &mServiceDiscordButton );
     addComponent( &mClearAccountButton );
     addComponent( &mCancelButton );
     addComponent( &mSettingsButton );
@@ -171,7 +171,7 @@ ExistingAccountPage::ExistingAccountPage()
     mGenesButton.addActionListener( this );
     mFamilyTreesButton.addActionListener( this );
     mTechTreeButton.addActionListener( this );
-    mOholCurseButton.addActionListener( this );
+    mServiceDiscordButton.addActionListener( this );
     mClearAccountButton.addActionListener( this );
     
     mCancelButton.addActionListener( this );
@@ -286,7 +286,7 @@ void ExistingAccountPage::makeActive( char inFresh ) {
     mLoginButton.setVisible( false );
     mFriendsButton.setVisible( false );
     mGenesButton.setVisible( false );
-    mOholCurseButton.setVisible( false );    
+    mServiceDiscordButton.setVisible( false );    
     
     int skipFPSMeasure = SettingsManager::getIntSetting( "skipFPSMeasure", 0 );
     
@@ -511,18 +511,15 @@ void ExistingAccountPage::actionPerformed( GUIComponent *inTarget ) {
             }
         delete [] url;
         }
-    else if( inTarget == &mOholCurseButton ) {     
-        const char *url = "https://oholcurse.com/redirect/profile";
+    else if (inTarget == &mServiceDiscordButton) {     
+        const char *baseURL = "https://discord.gg";
+        const char *inviteCode = "2TE6sCgtqH";
 
-        const char *leaderboardName = getLeaderboardName();
-        char *encodedLeaderboardName = hexEncode((unsigned char *)leaderboardName, strlen(leaderboardName));
+        char *fullURL = autoSprintf("%s/%s", baseURL, inviteCode);
 
-        char *fullURL = autoSprintf( "%s/%s",
-                                        url, encodedLeaderboardName);
-                                    
-        launchURL( fullURL );
-        delete [] encodedLeaderboardName;
-        delete [] fullURL;
+        launchURL(fullURL);
+
+        delete[] fullURL;
     }
     else if( inTarget == &mViewAccountButton ) {
         if( mHideAccount ) {
@@ -847,7 +844,7 @@ void ExistingAccountPage::draw( doublePair inViewCenter,
 
         const char *leaderboardName = getLeaderboardName();
         if (leaderboardName != NULL && !HetuwMod::privateModeEnabled) {
-            mOholCurseButton.setVisible( true );
+            mServiceDiscordButton.setVisible( true );
         }
 
         // YumLife: show window title with version info

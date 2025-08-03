@@ -637,7 +637,7 @@ void minitech::drawStr(
 	doublePair textPos = {posLT.x + padding, posCen.y};
 	
 	if (withBackground) {
-		setDrawColor( 0, 0, 0, 0.8 );
+		setDrawColor( 0, 0, 0, 0.7 );
 		drawRect( posCen, recWidth/2, recHeight/2);
 	}
 	
@@ -997,10 +997,10 @@ void minitech::updateDrawTwoTech() {
 		posLT.x = posLT.x - recWidth;
 		doublePair posCenter = {posLT.x + recWidth / 2, posLT.y - recHeight / 2};
 		doublePair posBR = {posLT.x + recWidth, posLT.y - recHeight};
-		setDrawColor( 0, 0, 0, 0.8 );
+		setDrawColor( 0, 0, 0, 0.7 );
 		drawRect( posCenter, recWidth/2, recHeight/2);
 		
-		drawStr("[+] CRAFTING GUIDE", posCenter, "tinyHandwritten", false);
+		drawStr("[+] CRAFTING", posCenter, "tinyHandwritten", false);
 		mouseListener* maxListener = getMouseListenerByArea(
 			&twotechMouseListeners, sub(posLT, screenPos), sub(posBR, screenPos));
 		if (maxListener->mouseHover) {
@@ -1024,7 +1024,7 @@ void minitech::updateDrawTwoTech() {
 		posLT.y = posLT.y + recHeight + (60); //panel height = 60
 		posLT.x = posLT.x - recWidth;
 		doublePair posCenter = {posLT.x + recWidth / 2, posLT.y - recHeight / 2};
-		setDrawColor( 0, 0, 0, 0.8 );
+		setDrawColor( 0, 0, 0, 0.7 );
 		drawRect( posCenter, recWidth/2, recHeight/2);
 		drawStr("NO RECIPES FOUND :)", posCenter, "tinyHandwritten", false);
 		
@@ -1051,7 +1051,7 @@ void minitech::updateDrawTwoTech() {
 		posLT.x = posLT.x - recWidth;
 		
 		doublePair posCenter = {posLT.x + recWidth / 2, posLT.y - recHeight / 2};
-		setDrawColor( 0, 0, 0, 0.8 );
+		setDrawColor( 0, 0, 0, 0.7 );
 		drawRect( posCenter, recWidth/2, recHeight/2);
 		
 		doublePair posLineLCen = {
@@ -1393,11 +1393,11 @@ void minitech::updateDrawTwoTech() {
 	float headerHeight = (paddingY + iconSize + barHeight + paddingY);
 	doublePair headerLT = {posLT.x, posLT.y + separatorHeight + headerHeight};
 	doublePair headerCen = {headerLT.x + headerWidth / 2, headerLT.y - headerHeight / 2};
-	setDrawColor( 0, 0, 0, 0.8 );
+	setDrawColor( 0, 0, 0, 0.7 );
 	drawRect( headerCen, headerWidth/2, headerHeight/2);
 
-	string useStr = "HOW DO I USE:";
-	string makeStr = "HOW DO I MAKE:";
+	string useStr = "HOW TO USE:";
+	string makeStr = "HOW TO MAKE:";
 	float textWidth = tinyHandwritingFont->measureString( makeStr.c_str() );
 	float textXOffset = -iconSize/2 - centerXSeparation/2;
 	doublePair textCen = {headerCen.x + textXOffset, headerCen.y + barOffsetY};
@@ -1408,7 +1408,7 @@ void minitech::updateDrawTwoTech() {
 	doublePair secondLineLT = {secondLine.x - textWidth/2 - paddingX/2, secondLine.y + tinyLineHeight/2 + paddingY/2};
 	doublePair secondLineBR = {secondLine.x + textWidth/2 + paddingX/2, secondLine.y - tinyLineHeight/2 - paddingY/2};
 
-	setDrawColor( 1, 1, 1, 0.3 );
+	setDrawColor( 1, 1, 1, 0.8 );
 	if (useOrMake == 0) {
 		drawRect( firstLine, textWidth/2 + paddingX/2, tinyLineHeight/2 + paddingY/2);
 	} else if (useOrMake == 1) {

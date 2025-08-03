@@ -18617,7 +18617,7 @@ int main( int inNumArgs, const char **inArgs ) {
     readPhrases( "forgiveYouPhrases", &youForgivingPhrases );
 
     readPhrases( "trustingPhrases", &trustingPhrases );
-    readPhrases( "trustYouPhrases", &youTrustingPhrases );
+    ( "trustYouPhrases", &youTrustingPhrases );
 
     
     readPhrases( "youGivingPhrases", &youGivingPhrases );

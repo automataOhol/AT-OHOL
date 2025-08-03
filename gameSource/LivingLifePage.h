@@ -620,6 +620,7 @@ class LivingLifePage : public GamePage, public ActionListener {
         LiveObject *getLiveObject( int inID );
         
         
+        
     protected:
 
         int mServerSocket;
