@@ -27499,28 +27499,6 @@ void LivingLifePage::keyDown( unsigned char inASCII ) {
                                     addToBlacklist( firstSpace );
                                     }
                                 }
-                            else if( commandTyped( typedText, "/REBORN" ) ||
-                                     commandTyped( typedText, "/TUTORIAL" ) ) {
-                                // YumLife mod
-                                if ( computeCurrentAge( ourLiveObject ) < 2 ) {
-                                    char *message = autoSprintf( "DIE 0 0#" );
-                                    sendToServerSocket( message );
-                                    delete [] message;
-                                    }
-                                else {
-                                    if ( mServerSocketOld != -1 ) {
-                                        closeSocket( mServerSocketOld );
-                                        }
-                                    mServerSocketOld = mServerSocket;
-                                    mServerSocket = -1;
-                                    if( commandTyped( typedText, "/REBORN" ) ) {
-                                        setSignal( "reborn" );
-                                        }
-                                    else {
-                                        setSignal( "tutorial" );
-                                        }
-                                    }
-                                }
                             else {
                                 // filter hints
                                 char *filterString = 

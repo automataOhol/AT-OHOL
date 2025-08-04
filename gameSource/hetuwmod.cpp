@@ -2782,11 +2782,11 @@ void HetuwMod::drawPlayerHostility(LiveObject* player) {
             }
 
             if (player_id != our_id && player->chasingUs) {
-                bool flashOn = (frameCount / 45) % 2 == 0;
+                bool flashOn = (frameCount / 90) % 2 == 0;
                 if (flashOn) {
                     setDrawColor(1, 0, 0, 0.30f);  // Red
                 } else {
-                    setDrawColor(0, 0, 0, 0.30f);  // White
+                    setDrawColor(1, 0.5, 0, 0.30f);  // White
                 }
             }
 
