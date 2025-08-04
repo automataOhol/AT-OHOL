@@ -17708,9 +17708,9 @@ static void tryToStartKill( LiveObject *nextPlayer, int inTargetID,
                                 // to scram or else, not to force them to get
                                 // off their horse.
                                 if( fullForceSoloPosse || posseSize > 1 ) {
-                                    tryToForceDropHeld( 
-                                        targetPlayer, 
-                                        playerIndicesToSendUpdatesAbout );
+                                    // tryToForceDropHeld( 
+                                    //     targetPlayer, 
+                                    //     playerIndicesToSendUpdatesAbout );
                                     }
                                 }
 

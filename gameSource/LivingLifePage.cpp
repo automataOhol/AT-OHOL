@@ -11218,7 +11218,6 @@ void LivingLifePage::draw( doublePair inViewCenter,
                     getObject( ourLiveObject->holdingID )->foodValue > 0 ) {
                     
                     const char *key = "eat";
-                    
                     if( strstr( 
                             getObject( ourLiveObject->holdingID )->description,
                             "+drink" ) != NULL ) {

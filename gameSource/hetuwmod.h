@@ -635,6 +635,7 @@ public:
 	// bools
 	static bool bDrawPlayerHostility;
 	static bool isHoldingWeapon(int holdingID);  
+	static bool justKilled(int holdingID);
 	static bool bDrawLeadershipVision;
 	// functions
 	static void drawPlayerHostility( LiveObject* player );
@@ -660,7 +661,8 @@ private:
 	static void drawHelp();
 	static void setHelpColorNormal();
 	static void setHelpColorSpecial();
-
+	static void setFlashColor( float r, float g, float b, float rate );
+	static void killFlashcolor();
 	static bool bDrawCords;
 	static void drawCords();
 

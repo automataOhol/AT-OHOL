@@ -2750,62 +2750,72 @@ void HetuwMod::drawPlayerNames( LiveObject* player ) {
 }
 
 void HetuwMod::drawPlayerHostility(LiveObject* player) { 
-	
-	if (bHidePlayers) return;
-	if (!player || player->hide || player->outOfRange || !player->allSpritesLoaded) return;
 
-	if (bDrawPlayerHostility) {
-		int tileX = player->currentPos.x;
-		int tileY = player->currentPos.y;
+    static int frameCount = 0;
+    frameCount++;
 
-		int player_holding_id = player->holdingID;
-		int our_holding_id = ourLiveObject->holdingID;
+    if (bHidePlayers) return;
+    if (!player || player->hide || player->outOfRange || !player->allSpritesLoaded) return;
 
-		int player_id = player->id;
-		int our_id = ourLiveObject->id;
+    if (bDrawPlayerHostility) {
+        int tileX = player->currentPos.x;
+        int tileY = player->currentPos.y;
 
-		int radius = 0;
+        int player_holding_id = player->holdingID;
+        int our_holding_id = ourLiveObject->holdingID;
 
-		if (player_holding_id == 152 || player_holding_id == 1624 ||
-			player_holding_id == 560 || player_holding_id == 3047) {
+        int player_id = player->id;
+        int our_id = ourLiveObject->id;
 
-			if (our_holding_id == 152 || our_holding_id == 1624 ||
-				our_holding_id == 560 || our_holding_id == 3047) {
-				setDrawColor(0, 0, 0, 0.30f);
-			}
+        int radius = 0;
 
-			if (player_id != our_id) {
-				setDrawColor(1, 0, 0, 0.15f);
-			}
+        if (player_holding_id == 152 || player_holding_id == 1624 ||
+            player_holding_id == 560 || player_holding_id == 3047) {
 
-			if (player_holding_id == 152 || player_holding_id == 1624) {
-				radius = 3;
-			}
-			else if (player_holding_id == 560 || player_holding_id == 3047) {
-				radius = 1;
-			}
+            if (our_holding_id == 152 || our_holding_id == 1624 ||
+                our_holding_id == 560 || our_holding_id == 3047) {
+                setDrawColor(0, 0, 0, 0.30f);
+            }
 
-			for (int x = tileX - radius; x <= tileX + radius; x++) {
-				for (int y = tileY - radius; y <= tileY + radius; y++) {
-					int dx = x - tileX;
-					int dy = y - tileY;
+            if (player_id != our_id) {
+                setDrawColor(1, 0, 0, 0.15f);
+            }
 
-					if (dx * dx + dy * dy <= radius * radius) {
-						drawTileRect(x, y);
-					}
-				}
-			}
-		}
-		else {
-			if (player_id != our_id) {
-				setDrawColor(1.0f, 1.0f, 0.0f, 0.15f);
-				drawTileRect(tileX, tileY);
-			}
-		}
-	}
+            if (player_id != our_id && player->chasingUs) {
+                bool flashOn = (frameCount / 45) % 2 == 0;
+                if (flashOn) {
+                    setDrawColor(1, 0, 0, 0.30f);  // Red
+                } else {
+                    setDrawColor(0, 0, 0, 0.30f);  // White
+                }
+            }
+
+            if (player_holding_id == 152 || player_holding_id == 1624) {
+                radius = 3;
+            }
+            else if (player_holding_id == 560 || player_holding_id == 3047) {
+                radius = 1;
+            }
+
+            for (int x = tileX - radius; x <= tileX + radius; x++) {
+                for (int y = tileY - radius; y <= tileY + radius; y++) {
+                    int dx = x - tileX;
+                    int dy = y - tileY;
+
+                    if (dx * dx + dy * dy <= radius * radius) {
+                        drawTileRect(x, y);
+                    }
+                }
+            }
+        }
+        else {
+            if (player_id != our_id) {
+                setDrawColor(1.0f, 1.0f, 0.0f, 0.15f);
+                drawTileRect(tileX, tileY);
+            }
+        }
+    }
 }
-
-
 
 void HetuwMod::drawHighlightedPlayer() {
 	if (game_getCurrentTime() - timeLastPlayerHover >= 4) return;
@@ -5006,29 +5016,37 @@ bool HetuwMod::isHoldingWeapon(int holdingID) {
     return weaponIDs.count(holdingID) > 0;
 }
 
+bool HetuwMod::justKilled(int holdingID) {
+    static const std::unordered_set<int> murderWeapons = {749, 750, 3048};
+    return murderWeapons.count(holdingID) > 0;
+}
+
+
+
+
 void HetuwMod::drawOurStatus() {
     char sBuf[64];
+
+
 
     string status = "NEUTRAL";
     setDrawColor(1, 1, 1, 1);  // Default green
 
     bool holdingWeapon = isHoldingWeapon(ourLiveObject->holdingID);
+	bool holdingMurderWeapon = justKilled(ourLiveObject->holdingID);
 
     for (int i = 0; i < gameObjects->size(); i++) {
         LiveObject* o = gameObjects->getElement(i);
         
+		// SICKNESS AND DISEASE
+
 		if (ourLiveObject->dying) {
 			status = "DYING";
 			setDrawColor(1, 0, 0, 1);
 		}
-		else if (
-			ourLiveObject->holdingID < 0 &&
-			ourLiveObject->age >= 14 &&
-			ourLiveObject->age < 40 &&
-			ourGender == 'F'
-		) {
-			status = "NUSURING";
-			setDrawColor(0, 1, 1, 1);
+		else if (ourLiveObject->sick){
+			status = "DISEASED";
+			setDrawColor(1, 0.5, 0, 1);
 		}
 		else if (
 			o->chasingUs &&
@@ -5037,20 +5055,53 @@ void HetuwMod::drawOurStatus() {
 			ourLiveObject->age < 40 &&
 			ourGender == 'F'
 
-		) {
-			status = "NUSURING - TARGETED";
+		) { // NURSE
+			status = "NUSURING, TARGETED";
 			setDrawColor(1, 1, 0, 1);
+		}
+		else if (ourLiveObject->heldByAdultID != -1 && o->chasingUs){
+			status = "HELD, TARGETED";
+			setDrawColor(1, 1, 0, 1);			
+		}
+		else if ( 
+			ourLiveObject->holdingID < 0 &&
+			ourLiveObject->age >= 14 &&
+			ourLiveObject->age < 40 &&
+			ourGender == 'F'
+		) {
+			status = "NUSURING";
+			setDrawColor(0, 1, 1, 1);
 		}
 		else if (ourLiveObject->heldByAdultID != -1){
 			status = "HELD";
 			setDrawColor(1, 1, 0, 1);			
+		} // ATTK
+		else if (ourLiveObject->currentEmot && ourLiveObject->currentEmot->mouthEmot == 3066 && o->chasingUs) {
+			status = "ATTACKING, TARGETED";
+			setDrawColor(1, 0, 0, 1);
 		}
-		else if (ourLiveObject->heldByAdultID != -1 && o->chasingUs){
-			status = "HELD - TARGETED";
-			setDrawColor(1, 1, 0, 1);			
+		else if (ourLiveObject->currentEmot && ourLiveObject->currentEmot->mouthEmot == 3066) {
+			status = "ATTACKING";
+			setDrawColor(1, 0, 0, 1);
+		}// MURD
+		else if (holdingMurderWeapon && o->chasingUs){
+			status = "VULNERABLE, DANGER";
+			setDrawColor(1, 0, 0, 1);
+		}
+		else if (holdingMurderWeapon){
+			status = "VULNERABLE";
+			setDrawColor(1, 0, 0, 1);
+		}// ARMS
+		else if (holdingWeapon && o->chasingUs && ourLiveObject->currentEmot && ourLiveObject->currentEmot->mouthEmot == 3815) {
+			status = "ARMED, DANGER";
+			setDrawColor(1, 0, 0, 1);
+		}
+		else if (o->chasingUs && ourLiveObject->currentEmot->mouthEmot == 3815) {
+			status = "TARGETED, DANGER";
+			setDrawColor(1, 0, 0, 1);
 		}
 		else if (holdingWeapon && o->chasingUs) {
-			status = "ARMED - TARGETED";
+			status = "ARMED, TARGETED";
 			setDrawColor(1, 0, 0, 1);
 		}
 		else if (o->chasingUs) {
@@ -5060,6 +5111,35 @@ void HetuwMod::drawOurStatus() {
 		else if (holdingWeapon) {
 			status = "ARMED";
 			setDrawColor(1, 0.5, 0, 1);
+		}
+		else if (ourLiveObject->holdingID != 0) {
+			ObjectRecord* obj = getObject(ourLiveObject->holdingID);
+			if (obj != NULL) {
+				char* stringUpper = stringToUpperCase(obj->description);
+				status = stringUpper;
+				setDrawColor(0.5, 1, 0, 1);			
+
+				delete [] stringUpper;  
+			}
+		}
+		else if (ourLiveObject->name != NULL){
+			if (ourLiveObject->isExiled){
+				status = std::string("THE EXILED ") + ourLiveObject->name;
+				setDrawColor(1, 0, 0, 1);
+			}
+			else{
+				status = ourLiveObject->name;
+				setDrawColor(1, 1, 1, 1);
+			}
+
+		}
+		else if (ourLiveObject->isExiled){
+			status = "EXILED";
+			setDrawColor(1, 0, 0, 1);
+		}
+		else{
+			status = "NEUTRAL";
+			setDrawColor(1, 1, 1, 1);
 		}
 
 
@@ -5172,7 +5252,7 @@ void HetuwMod::setHelpColorNormal() {
 }
 
 void HetuwMod::setHelpColorSpecial() {
-	setDrawColor(1.0f, 1.0f, 0.0f, 1.0f);
+	setDrawColor( colorRainbow->color[0], 0.5f, colorRainbow->color[2], 1 );
 }
 
 void HetuwMod::drawHelp() {
