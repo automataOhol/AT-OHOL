@@ -636,6 +636,7 @@ public:
 	static bool bDrawPlayerHostility;
 	static bool isHoldingWeapon(int holdingID);  
 	static bool justKilled(int holdingID);
+	static bool nursing_baby();
 	static bool bDrawLeadershipVision;
 	// functions
 	static void drawPlayerHostility( LiveObject* player );
@@ -646,6 +647,8 @@ public:
 	static void drawHunger();
 	static void drawOurStatus();
 	static void drawSpeed();
+
+	// Light Helpers
 private:
 	// Shady's ATC
 	// Chars

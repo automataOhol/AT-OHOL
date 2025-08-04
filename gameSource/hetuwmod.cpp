@@ -5004,7 +5004,7 @@ void HetuwMod::drawSpeed() {
     snprintf(sBuf, sizeof(sBuf), "%d.%02d MPS", mpsWhole, mpsDecimal);
 
     drawPos = lastScreenViewCenter;
-    drawPos.x += -280;
+    drawPos.x += -270;
     drawPos.y -= viewHeight / 2 - 25;
 
 	
@@ -5116,7 +5116,9 @@ void HetuwMod::drawOurStatus() {
 			ObjectRecord* obj = getObject(ourLiveObject->holdingID);
 			if (obj != NULL) {
 				char* stringUpper = stringToUpperCase(obj->description);
-				status = stringUpper;
+				char descrBuf[256];
+				HetuwMod::objGetDescrWithoutHashtag(stringUpper, descrBuf, sizeof(descrBuf));
+				status = descrBuf;
 				setDrawColor(0.5, 1, 0, 1);			
 
 				delete [] stringUpper;  
@@ -5149,8 +5151,8 @@ void HetuwMod::drawOurStatus() {
 			lastScreenViewCenter.x,
 			lastScreenViewCenter.y - 340 - HetuwMod::panelOffsetY
 		};
-
-		livingLifePage->hetuwDrawWithHandwritingFont(sBuf, tipPos, alignCenter);
+		double customScale = 0.8; 
+		livingLifePage->hetuwDrawScaledHandwritingFont(sBuf, tipPos, customScale, alignCenter);
 		return;
 	
     }
