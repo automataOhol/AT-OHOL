@@ -5056,8 +5056,8 @@ void HetuwMod::drawOurStatus() {
 			ourGender == 'F'
 
 		) { // NURSE
-			status = "NUSURING, TARGETED";
-			setDrawColor(1, 1, 0, 1);
+			status = "NURSING, TARGETED";
+			setDrawColor(1, 0, 1, 1);
 		}
 		else if (ourLiveObject->heldByAdultID != -1 && o->chasingUs){
 			status = "HELD, TARGETED";
