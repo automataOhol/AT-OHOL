@@ -179,15 +179,15 @@ if(WIN32)
         message(FATAL_ERROR "SDL directory not found: ${SDL_DIR}")
     endif()
 
-    add_executable(ATLIFE_windows ${CLIENT_SOURCE_FILES} ${MINORGEMS_SOURCE_FILES} icon.rc)
-    target_compile_options(ATLIFE_windows PRIVATE ${CLIENT_COMPILE_OPTIONS})
-    target_link_libraries(ATLIFE_windows opengl32 glu32 mingw32 SDLmain SDL wsock32 winmm)
-    target_link_options(ATLIFE_windows PRIVATE -mwindows -static-libstdc++ -static-libgcc)
+    add_executable(Pielife_windows ${CLIENT_SOURCE_FILES} ${MINORGEMS_SOURCE_FILES} icon.rc)
+    target_compile_options(Pielife_windows PRIVATE ${CLIENT_COMPILE_OPTIONS})
+    target_link_libraries(Pielife_windows opengl32 glu32 mingw32 SDLmain SDL wsock32 winmm)
+    target_link_options(Pielife_windows PRIVATE -mwindows -static-libstdc++ -static-libgcc)
 elseif(APPLE)
     add_definitions(-DMACOSX -D__mac__)
 
-    add_executable(ATLIFE_macos MACOSX_BUNDLE ${CLIENT_SOURCE_FILES} ${MINORGEMS_SOURCE_FILES})
-    target_compile_options(ATLIFE_macos PRIVATE ${CLIENT_COMPILE_OPTIONS})
+    add_executable(Pielife_macos MACOSX_BUNDLE ${CLIENT_SOURCE_FILES} ${MINORGEMS_SOURCE_FILES})
+    target_compile_options(Pielife_macos PRIVATE ${CLIENT_COMPILE_OPTIONS})
 
     find_library(SDL_LIBRARY NAMES SDL-1.2 SDL12-compat SDL PATHS /opt/homebrew/opt/sdl12-compat/lib PATH_SUFFIXES SDL12-compat)
     find_path(SDL_INCLUDE_DIR SDL.h PATHS /opt/homebrew/opt/sdl12-compat/include/SDL)
@@ -195,13 +195,13 @@ elseif(APPLE)
         message(FATAL_ERROR "libsdl12-compat not found. Please install with Homebrew: brew install sdl12-compat")
     endif()
     include_directories(${SDL_INCLUDE_DIR})
-    target_link_libraries(ATLIFE_macos ${SDL_LIBRARY})
+    target_link_libraries(Pielife_macos ${SDL_LIBRARY})
 
     find_package(OpenGL REQUIRED)
     include_directories(${OPENGL_INCLUDE_DIR})
-    target_link_libraries(ATLIFE_macos ${OPENGL_LIBRARIES})
+    target_link_libraries(Pielife_macos ${OPENGL_LIBRARIES})
 
-    target_link_libraries(ATLIFE_macos "-framework Cocoa" "-framework IOKit" "-framework CoreVideo" "-framework Carbon")
+    target_link_libraries(Pielife_macos "-framework Cocoa" "-framework IOKit" "-framework CoreVideo" "-framework Carbon")
 
     # Symlink OpenGL headers into the build directory so we don't have to change
     # the include paths in the source files
@@ -210,19 +210,19 @@ elseif(APPLE)
 
     set(MACOS_EXTRA_SOURCES ${CMAKE_SOURCE_DIR}/minorGems/game/platforms/SDL/mac/SDLMain.m)
     set_source_files_properties(${MACOS_EXTRA_SOURCES} PROPERTIES LANGUAGE OBJC)
-    target_sources(ATLIFE_macos PRIVATE ${MACOS_EXTRA_SOURCES})
-    set_property(TARGET ATLIFE_macos APPEND_STRING PROPERTY LINK_FLAGS " -ObjC")
+    target_sources(Pielife_macos PRIVATE ${MACOS_EXTRA_SOURCES})
+    set_property(TARGET Pielife_macos APPEND_STRING PROPERTY LINK_FLAGS " -ObjC")
 
     get_filename_component(SDL_REALPATH "${SDL_LIBRARY}" REALPATH)
     get_filename_component(SDL_REALNAME "${SDL_REALPATH}" NAME)
 
-    add_custom_command(TARGET ATLIFE_macos POST_BUILD
+    add_custom_command(TARGET Pielife_macos POST_BUILD
         COMMENT "Copying SDL dylib into app bundle Frameworks directory and fixing install name"
-        COMMAND ${CMAKE_COMMAND} -E make_directory "$<TARGET_BUNDLE_DIR:ATLIFE_macos>/Contents/Frameworks"
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different "${SDL_REALPATH}" "$<TARGET_BUNDLE_DIR:ATLIFE_macos>/Contents/Frameworks/${SDL_REALNAME}"
-        COMMAND chmod u+w "$<TARGET_BUNDLE_DIR:ATLIFE_macos>/Contents/Frameworks/${SDL_REALNAME}"
-        COMMAND install_name_tool -change "/opt/homebrew/opt/sdl12-compat/lib/${SDL_REALNAME}" "@executable_path/../Frameworks/${SDL_REALNAME}" "$<TARGET_BUNDLE_DIR:ATLIFE_macos>/Contents/MacOS/ATLIFE_macos"
-        COMMAND install_name_tool -id "@executable_path/../Frameworks/${SDL_REALNAME}" "$<TARGET_BUNDLE_DIR:ATLIFE_macos>/Contents/Frameworks/${SDL_REALNAME}"
+        COMMAND ${CMAKE_COMMAND} -E make_directory "$<TARGET_BUNDLE_DIR:Pielife_macos>/Contents/Frameworks"
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different "${SDL_REALPATH}" "$<TARGET_BUNDLE_DIR:Pielife_macos>/Contents/Frameworks/${SDL_REALNAME}"
+        COMMAND chmod u+w "$<TARGET_BUNDLE_DIR:Pielife_macos>/Contents/Frameworks/${SDL_REALNAME}"
+        COMMAND install_name_tool -change "/opt/homebrew/opt/sdl12-compat/lib/${SDL_REALNAME}" "@executable_path/../Frameworks/${SDL_REALNAME}" "$<TARGET_BUNDLE_DIR:Pielife_macos>/Contents/MacOS/Pielife_macos"
+        COMMAND install_name_tool -id "@executable_path/../Frameworks/${SDL_REALNAME}" "$<TARGET_BUNDLE_DIR:Pielife_macos>/Contents/Frameworks/${SDL_REALNAME}"
     )
 
     # Find SDL2 dylib and copy it into the app bundle. sdl12-compat needs to be
@@ -234,12 +234,12 @@ elseif(APPLE)
     get_filename_component(SDL2_REALPATH "${SDL2_LIBRARY}" REALPATH)
     get_filename_component(SDL2_REALNAME "${SDL2_REALPATH}" NAME)
 
-    add_custom_command(TARGET ATLIFE_macos POST_BUILD
+    add_custom_command(TARGET Pielife_macos POST_BUILD
         COMMENT "Copying SDL2 dylib into app bundle Frameworks directory and fixing install name"
-        COMMAND ${CMAKE_COMMAND} -E make_directory "$<TARGET_BUNDLE_DIR:ATLIFE_macos>/Contents/Frameworks"
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different "${SDL2_REALPATH}" "$<TARGET_BUNDLE_DIR:ATLIFE_macos>/Contents/Frameworks/${SDL2_REALNAME}"
-        COMMAND chmod u+w "$<TARGET_BUNDLE_DIR:ATLIFE_macos>/Contents/Frameworks/${SDL2_REALNAME}"
-        COMMAND install_name_tool -id "@executable_path/../Frameworks/${SDL2_REALNAME}" "$<TARGET_BUNDLE_DIR:ATLIFE_macos>/Contents/Frameworks/${SDL2_REALNAME}"
+        COMMAND ${CMAKE_COMMAND} -E make_directory "$<TARGET_BUNDLE_DIR:Pielife_macos>/Contents/Frameworks"
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different "${SDL2_REALPATH}" "$<TARGET_BUNDLE_DIR:Pielife_macos>/Contents/Frameworks/${SDL2_REALNAME}"
+        COMMAND chmod u+w "$<TARGET_BUNDLE_DIR:Pielife_macos>/Contents/Frameworks/${SDL2_REALNAME}"
+        COMMAND install_name_tool -id "@executable_path/../Frameworks/${SDL2_REALNAME}" "$<TARGET_BUNDLE_DIR:Pielife_macos>/Contents/Frameworks/${SDL2_REALNAME}"
     )
 
     # Generate the icns from mac_icon.png using iconutil
@@ -269,63 +269,63 @@ elseif(APPLE)
         DEPENDS "${MAC_ICON_PNG}"
     )
     add_custom_target(mac_icon ALL DEPENDS ${MAC_ICON_ICNS})
-    add_dependencies(ATLIFE_macos mac_icon)
+    add_dependencies(Pielife_macos mac_icon)
 
     # Copy the icns into the app bundle
-    add_custom_command(TARGET ATLIFE_macos POST_BUILD
-        COMMAND mkdir -p "$<TARGET_BUNDLE_DIR:ATLIFE_macos>/Contents/Resources"
-        COMMAND cp "${MAC_ICON_ICNS}" "$<TARGET_BUNDLE_DIR:ATLIFE_macos>/Contents/Resources/"
+    add_custom_command(TARGET Pielife_macos POST_BUILD
+        COMMAND mkdir -p "$<TARGET_BUNDLE_DIR:Pielife_macos>/Contents/Resources"
+        COMMAND cp "${MAC_ICON_ICNS}" "$<TARGET_BUNDLE_DIR:Pielife_macos>/Contents/Resources/"
         COMMENT "Copying mac_icon.icns into app bundle Resources"
     )
 
-    if(DEFINED ENV{ATLIFE_CODESIGN})
-        add_custom_command(TARGET ATLIFE_macos POST_BUILD
+    if(DEFINED ENV{Pielife_CODESIGN})
+        add_custom_command(TARGET Pielife_macos POST_BUILD
             COMMENT "Code signing app bundle"
             # This directory is mandatory for codesign to work properly
-            COMMAND mkdir -p "$<TARGET_BUNDLE_DIR:ATLIFE_macos>/Contents/Resources"
+            COMMAND mkdir -p "$<TARGET_BUNDLE_DIR:Pielife_macos>/Contents/Resources"
             # Clear out any remaining trace of previous signatures
-            COMMAND codesign --remove-signature "$<TARGET_BUNDLE_DIR:ATLIFE_macos>"
-            COMMAND codesign --remove-signature "$<TARGET_BUNDLE_DIR:ATLIFE_macos>/Contents/Frameworks/${SDL_REALNAME}"
-            COMMAND rm -rf "$<TARGET_BUNDLE_DIR:ATLIFE_macos>/Contents/_CodeSignature" "$<TARGET_BUNDLE_DIR:ATLIFE_macos>/_CodeSignature"
-            COMMAND xattr -cr "$<TARGET_BUNDLE_DIR:ATLIFE_macos>"
+            COMMAND codesign --remove-signature "$<TARGET_BUNDLE_DIR:Pielife_macos>"
+            COMMAND codesign --remove-signature "$<TARGET_BUNDLE_DIR:Pielife_macos>/Contents/Frameworks/${SDL_REALNAME}"
+            COMMAND rm -rf "$<TARGET_BUNDLE_DIR:Pielife_macos>/Contents/_CodeSignature" "$<TARGET_BUNDLE_DIR:Pielife_macos>/_CodeSignature"
+            COMMAND xattr -cr "$<TARGET_BUNDLE_DIR:Pielife_macos>"
             # Actually sign now
-            COMMAND codesign --force --sign "$ENV{ATLIFE_CODESIGN}" --timestamp --options runtime "$<TARGET_BUNDLE_DIR:ATLIFE_macos>/Contents/Frameworks/${SDL_REALNAME}" VERBATIM
-            COMMAND codesign --force --sign "$ENV{ATLIFE_CODESIGN}" --timestamp --options runtime "$<TARGET_BUNDLE_DIR:ATLIFE_macos>/Contents/Frameworks/${SDL2_REALNAME}" VERBATIM
-            COMMAND codesign --force --sign "$ENV{ATLIFE_CODESIGN}" --timestamp --options runtime --preserve-metadata=entitlements,requirements,flags "$<TARGET_BUNDLE_DIR:ATLIFE_macos>" VERBATIM
+            COMMAND codesign --force --sign "$ENV{Pielife_CODESIGN}" --timestamp --options runtime "$<TARGET_BUNDLE_DIR:Pielife_macos>/Contents/Frameworks/${SDL_REALNAME}" VERBATIM
+            COMMAND codesign --force --sign "$ENV{Pielife_CODESIGN}" --timestamp --options runtime "$<TARGET_BUNDLE_DIR:Pielife_macos>/Contents/Frameworks/${SDL2_REALNAME}" VERBATIM
+            COMMAND codesign --force --sign "$ENV{Pielife_CODESIGN}" --timestamp --options runtime --preserve-metadata=entitlements,requirements,flags "$<TARGET_BUNDLE_DIR:Pielife_macos>" VERBATIM
             # Verify the signature
-            COMMAND codesign --verify --verbose=4 "$<TARGET_BUNDLE_DIR:ATLIFE_macos>"
+            COMMAND codesign --verify --verbose=4 "$<TARGET_BUNDLE_DIR:Pielife_macos>"
         )
     else()
-        message(STATUS "ATLIFE_CODESIGN not set, skipping code signing.")
+        message(STATUS "Pielife_CODESIGN not set, skipping code signing.")
     endif()
 
     # Notarization takes forever, so it's a separate target that has to be run manually.
     add_custom_target(notarize
         COMMENT "Notarizing app bundle"
-        DEPENDS ATLIFE_macos
-        COMMAND ditto -c -k --sequesterRsrc --keepParent "$<TARGET_BUNDLE_DIR:ATLIFE_macos>" "$<TARGET_BUNDLE_DIR:ATLIFE_macos>.zip"
-        COMMAND xcrun notarytool submit "$<TARGET_BUNDLE_DIR:ATLIFE_macos>.zip" --keychain-profile "$ENV{ATLIFE_NOTARY_PROFILE}" --wait
-        COMMAND xcrun stapler staple "$<TARGET_BUNDLE_DIR:ATLIFE_macos>"
-        COMMAND xcrun stapler validate "$<TARGET_BUNDLE_DIR:ATLIFE_macos>"
+        DEPENDS Pielife_macos
+        COMMAND ditto -c -k --sequesterRsrc --keepParent "$<TARGET_BUNDLE_DIR:Pielife_macos>" "$<TARGET_BUNDLE_DIR:Pielife_macos>.zip"
+        COMMAND xcrun notarytool submit "$<TARGET_BUNDLE_DIR:Pielife_macos>.zip" --keychain-profile "$ENV{Pielife_NOTARY_PROFILE}" --wait
+        COMMAND xcrun stapler staple "$<TARGET_BUNDLE_DIR:Pielife_macos>"
+        COMMAND xcrun stapler validate "$<TARGET_BUNDLE_DIR:Pielife_macos>"
         # re-zip the notarized app bundle
-        COMMAND ditto -c -k --sequesterRsrc --keepParent "$<TARGET_BUNDLE_DIR:ATLIFE_macos>" ATLIFE_macos.zip
+        COMMAND ditto -c -k --sequesterRsrc --keepParent "$<TARGET_BUNDLE_DIR:Pielife_macos>" Pielife_macos.zip
         USES_TERMINAL
     )
 
-    set_target_properties(ATLIFE_macos PROPERTIES
+    set_target_properties(Pielife_macos PROPERTIES
         MACOSX_BUNDLE_INFO_PLIST "${CMAKE_SOURCE_DIR}/Info.plist.in"
     )
 else()
     add_definitions(-DLINUX)
 
-    add_executable(ATLIFE_linux ${CLIENT_SOURCE_FILES} ${MINORGEMS_SOURCE_FILES})
-    target_compile_options(ATLIFE_linux PRIVATE ${CLIENT_COMPILE_OPTIONS})
+    add_executable(Pielife_linux ${CLIENT_SOURCE_FILES} ${MINORGEMS_SOURCE_FILES})
+    target_compile_options(Pielife_linux PRIVATE ${CLIENT_COMPILE_OPTIONS})
 
     find_package(SDL REQUIRED)
     include_directories(${SDL_INCLUDE_DIR})
-    target_link_libraries(ATLIFE_linux ${SDL_LIBRARY})
+    target_link_libraries(Pielife_linux ${SDL_LIBRARY})
 
     find_package(OpenGL REQUIRED)
     include_directories(${OPENGL_INCLUDE_DIR})
-    target_link_libraries(ATLIFE_linux ${OPENGL_LIBRARIES})
+    target_link_libraries(Pielife_linux ${OPENGL_LIBRARIES})
 endif()
