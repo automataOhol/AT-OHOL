@@ -18,7 +18,7 @@ void LoadingPage::setCurrentProgress( float inProgress ) {
 
 void LoadingPage::draw(doublePair inViewCenter, double inViewSize) {
     doublePair labelPos = { 0, 50 };
-    drawMessage("AT CLIENT - SSC SERVICES", labelPos, false);
+    drawMessage("PIELIFE - SSC SERVICES", labelPos, false);
 
     labelPos.y = -25;
     drawMessage(mPhaseName, labelPos, false);
