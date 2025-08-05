@@ -5494,7 +5494,7 @@ void HetuwMod::drawHungerWarning() {
 // ended; it can be called repeatedly without us seeing any successful
 // connections or births between.
 void HetuwMod::onNotLiving() {
-	// not used yet :)
+	// not used yet :)	
 }
 
 void HetuwMod::onDropSent() {

@@ -513,7 +513,7 @@ void ExistingAccountPage::actionPerformed( GUIComponent *inTarget ) {
         }
     else if (inTarget == &mServiceDiscordButton) {     
         const char *baseURL = "https://discord.gg";
-        const char *inviteCode = "2TE6sCgtqH";
+        const char *inviteCode = "SYVWwubD3E";
 
         char *fullURL = autoSprintf("%s/%s", baseURL, inviteCode);
 

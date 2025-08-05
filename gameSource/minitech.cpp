@@ -640,7 +640,7 @@ void minitech::drawStr(
 		setDrawColor( 0, 0, 0, 0.7 );
 		drawRect( posCen, recWidth/2, recHeight/2);
 	}
-	
+	 	
 	setDrawColor( 1, 1, 1, 1 );
 	if (font == "handwritten") {
 		handwritingFont->drawString( sBuf, textPos, alignLeft );

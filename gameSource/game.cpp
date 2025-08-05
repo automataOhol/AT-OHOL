@@ -202,7 +202,7 @@ SpriteHandle instructionsSprite;
 
 
 // position of view in world
-doublePair lastScreenViewCenter = {0, 0 };
+doublePair lastScreenViewCenter = {0, 0};
 
 
 

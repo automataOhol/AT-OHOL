@@ -10851,9 +10851,9 @@ void LivingLifePage::draw( doublePair inViewCenter,
 
 
     // info panel at bottom, over top of all the other slips
-    setDrawColor( 1, 1, 1, 1 );
-
-    doublePair panelPos = lastScreenViewCenter;
+    setDrawColor(0.02, 0.02, 0.05, 0.7); 
+    //shady here
+    doublePair panelPos = lastScreenViewCenter; //0, 0
     panelPos.x += 50;  // move right
     panelPos.y -= 350;  // move up
     panelPos.y -= HetuwMod::panelOffsetY;  // apply custom Y offset
@@ -10869,7 +10869,7 @@ void LivingLifePage::draw( doublePair inViewCenter,
     double endX = panelPos.x + rectWidth / 2;
     double endY = panelPos.y + rectHeight / 2;
 
-    setDrawColor(0.02, 0.02, 0.05, 1); 
+
     drawRect( startX, startY, endX, endY );
 
     if( ourLiveObject != NULL &&
